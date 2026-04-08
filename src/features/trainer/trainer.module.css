@@ -1,0 +1,537 @@
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(88rem, calc(100vw - 3rem));
+  margin: 0 auto;
+}
+
+.appShell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: var(--trainer-text-strong);
+}
+
+.topBar,
+.validationStrip,
+.cueFrame,
+.settingsCard,
+.statCard {
+  border: 1px solid var(--trainer-border-strong);
+  background:
+    linear-gradient(180deg, rgba(16, 16, 16, 0.96), rgba(4, 4, 4, 0.98)),
+    rgba(0, 0, 0, 0.94);
+  box-shadow: var(--trainer-shadow-panel);
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: flex-start;
+  padding: 1.6rem 1.8rem;
+}
+
+.titleBlock {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 48rem;
+}
+
+.settingsKicker,
+.cueStep,
+.feedbackLabel {
+  margin: 0;
+  color: var(--trainer-accent-soft);
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.titleBlock h1,
+.titleBlock h2,
+.settingsCard h2,
+.sectionHeading h3,
+.validationStrip h2,
+.statCard strong,
+.cueFallback strong,
+.feedbackPanel strong {
+  margin: 0;
+}
+
+.titleBlock h1 {
+  color: #ff2f1c;
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+}
+
+.titleBlock h2 {
+  max-width: 42rem;
+  color: var(--trainer-text-strong);
+  font-size: clamp(1rem, 1.8vw, 1.45rem);
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+}
+
+.topBarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.primaryButton,
+.dangerButton,
+.ghostButton,
+.bindButton {
+  border: 1px solid var(--trainer-border-strong);
+  color: var(--trainer-text-strong);
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    opacity 160ms ease;
+}
+
+.primaryButton,
+.dangerButton,
+.ghostButton {
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+}
+
+.primaryButton {
+  color: #050505;
+  background: linear-gradient(180deg, var(--trainer-accent), var(--trainer-accent-strong));
+}
+
+.dangerButton {
+  background:
+    linear-gradient(180deg, rgba(36, 36, 36, 0.96), rgba(10, 10, 10, 0.98)),
+    rgba(0, 0, 0, 0.9);
+}
+
+.ghostButton,
+.bindButton {
+  background:
+    linear-gradient(180deg, rgba(22, 22, 22, 0.92), rgba(6, 6, 6, 0.96)),
+    rgba(0, 0, 0, 0.9);
+}
+
+.primaryButton:hover:not(:disabled),
+.dangerButton:hover:not(:disabled),
+.ghostButton:hover:not(:disabled),
+.bindButton:hover:not(:disabled),
+.actionChip:hover:not(:has(input:disabled)) {
+  transform: translateY(-1px);
+  border-color: var(--trainer-accent-soft);
+}
+
+.primaryButton:disabled,
+.dangerButton:disabled,
+.ghostButton:disabled,
+.bindButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.validationStrip {
+  padding: 1rem 1.2rem;
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.validationStrip ul {
+  margin: 0.65rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--trainer-warning);
+}
+
+.viewShell,
+.trainerPanel {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.cueFrame {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.2rem;
+  min-height: 34rem;
+  padding: 1.35rem;
+}
+
+.cueFrame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.045), transparent 38%),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 34px,
+      rgba(255, 255, 255, 0.02) 34px,
+      rgba(255, 255, 255, 0.02) 35px
+    );
+  pointer-events: none;
+}
+
+.cueFrameHeader,
+.cueFrameBody,
+.feedbackPanel {
+  position: relative;
+  z-index: 1;
+}
+
+.cueFrameHeader {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.cueHint,
+.settingsNote,
+.sectionHeading p,
+.bindingRow span,
+.statCard span,
+.actionGroupHeading span,
+.cueFallback p {
+  margin: 0;
+  color: var(--trainer-text-muted);
+}
+
+.cueFrameBody {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1rem;
+}
+
+.cueImageShell,
+.cueFallback {
+  width: min(100%, 34rem);
+  border-radius: 1.25rem;
+  border: 1px solid var(--trainer-border-muted);
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0) 58%),
+    linear-gradient(180deg, rgba(18, 18, 18, 0.97), rgba(3, 3, 3, 0.95));
+}
+
+.cueImageShell {
+  position: relative;
+  height: min(56vh, 28rem);
+  overflow: hidden;
+  animation: cuePulse 280ms ease-out;
+}
+
+.cueImage {
+  object-fit: contain;
+  object-position: center;
+  padding: 1rem;
+}
+
+.cueFallback {
+  min-height: 20rem;
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.cueFallback strong {
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+}
+
+.cueFallback p {
+  max-width: 20rem;
+}
+
+.cueFallbackVariant {
+  display: inline-flex;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--trainer-accent-soft);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cueCaption {
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--trainer-border-muted);
+  background: rgba(0, 0, 0, 0.26);
+  color: var(--trainer-text-strong);
+}
+
+.cueActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+}
+
+.feedbackPanel {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--trainer-border-muted);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.feedbackPanel strong {
+  font-size: 1rem;
+}
+
+.isNeutral {
+  border-color: var(--trainer-border-strong);
+}
+
+.isCorrect {
+  border-color: rgba(255, 255, 255, 0.72);
+}
+
+.isIncorrect {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.isArmed {
+  border-color: rgba(255, 255, 255, 0.52);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statCard {
+  padding: 1rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.statCard span {
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.statCard strong {
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+}
+
+.settingsPanel {
+  min-width: 0;
+}
+
+.settingsCard {
+  display: grid;
+  gap: 1.4rem;
+  padding: 1.35rem;
+}
+
+.settingsCardHeader,
+.bindingRow,
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.settingsCardHeader {
+  align-items: flex-start;
+}
+
+.settingsSection {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--trainer-border-muted);
+}
+
+.toggleRow {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  color: var(--trainer-text-strong);
+}
+
+.bindingList,
+.actionGroups {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.bindingRow {
+  padding: 0.85rem 0.95rem;
+  border-radius: 1rem;
+  border: 1px solid var(--trainer-border-muted);
+  background:
+    linear-gradient(180deg, rgba(18, 18, 18, 0.92), rgba(6, 6, 6, 0.96)),
+    rgba(0, 0, 0, 0.88);
+}
+
+.bindingRow strong,
+.actionGroupHeading strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.bindButton {
+  min-width: 12rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.9rem;
+}
+
+.isCapturing {
+  border-color: var(--trainer-accent-soft);
+  color: var(--trainer-accent-soft);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.actionGroup {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.95rem;
+  border-radius: 1rem;
+  border: 1px solid var(--trainer-border-muted);
+  background:
+    linear-gradient(180deg, rgba(15, 15, 15, 0.92), rgba(4, 4, 4, 0.96)),
+    rgba(0, 0, 0, 0.88);
+}
+
+.actionGroupHeading span {
+  font-size: 0.88rem;
+}
+
+.actionChipGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.actionChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 0.65rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--trainer-border-muted);
+  background:
+    linear-gradient(180deg, rgba(18, 18, 18, 0.96), rgba(7, 7, 7, 0.98)),
+    rgba(0, 0, 0, 0.9);
+  color: var(--trainer-text-strong);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.actionChip input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.actionChipContent {
+  display: grid;
+  gap: 0.22rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.actionChipContent strong {
+  font-size: 0.98rem;
+}
+
+.actionChipState {
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.isEnabled {
+  border-color: rgba(255, 255, 255, 0.78);
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.12) 0,
+      rgba(255, 255, 255, 0.12) 6px,
+      rgba(255, 255, 255, 0.03) 6px,
+      rgba(255, 255, 255, 0.03) 12px
+    ),
+    linear-gradient(180deg, rgba(32, 32, 32, 0.96), rgba(10, 10, 10, 0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.isEnabled .actionChipState {
+  color: var(--trainer-accent-soft);
+}
+
+.isDisabled {
+  opacity: 0.6;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.isDisabled .actionChipState {
+  color: var(--trainer-text-muted);
+}
+
+.actionChip:has(input:focus-visible) {
+  outline: 2px solid var(--trainer-accent-soft);
+  outline-offset: 2px;
+}
+
+@keyframes cuePulse {
+  0% {
+    transform: scale(0.985);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.22);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 18px rgba(255, 255, 255, 0);
+  }
+}
+
+@media (max-width: 1080px) {
+  .topBar,
+  .settingsCardHeader,
+  .bindingRow,
+  .sectionHeading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100%, calc(100vw - 1.5rem));
+  }
+
+  .cueFrame {
+    min-height: 28rem;
+  }
+
+  .actionChipGrid,
+  .statsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

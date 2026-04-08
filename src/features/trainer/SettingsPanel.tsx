@@ -1,5 +1,6 @@
 import { trainerActions, weaponCatalog } from '../../data/weaponCatalog'
 import { formatInputToken } from './input'
+import styles from './trainer.module.css'
 import type {
   ActionId,
   BindingCaptureTarget,
@@ -33,29 +34,29 @@ export function SettingsPanel({
   onToggleAction,
 }: SettingsPanelProps) {
   return (
-    <section className="settings-panel">
-      <div className="settings-card">
-        <div className="settings-card__header">
+    <section className={styles.settingsPanel}>
+      <div className={styles.settingsCard}>
+        <div className={styles.settingsCardHeader}>
           <div>
-            <p className="settings-kicker">Configuration</p>
+            <p className={styles.settingsKicker}>Configuration</p>
             <h2>Trainer settings</h2>
           </div>
 
           {captureTarget ? (
-            <button className="ghost-button" onClick={onCancelCapture}>
+            <button className={styles.ghostButton} onClick={onCancelCapture}>
               Cancel Capture
             </button>
           ) : null}
         </div>
 
-        <p className="settings-note">
+        <p className={styles.settingsNote}>
           {settingsLocked
             ? 'Settings are locked while a run is active. Reset to change binds.'
             : 'Capture a key or mouse button directly from the interface. Browser back/forward mouse buttons are supported. Audio cues stay built in, and the header mute button silences them when needed.'}
         </p>
 
-        <div className="settings-section">
-          <label className="toggle-row">
+        <div className={styles.settingsSection}>
+          <label className={styles.toggleRow}>
             <input
               type="checkbox"
               checked={config.showTextLabels}
@@ -66,26 +67,26 @@ export function SettingsPanel({
           </label>
         </div>
 
-        <div className="settings-section">
-          <div className="section-heading">
+        <div className={styles.settingsSection}>
+          <div className={styles.sectionHeading}>
             <h3>Weapon binds</h3>
             <p>Assign the primary weapon select input for each weapon family.</p>
           </div>
 
-          <div className="binding-list">
+          <div className={styles.bindingList}>
             {weaponIds.map((weaponId) => {
               const weaponEntry = weaponCatalog[weaponId]
               const isCapturing =
                 captureTarget?.scope === 'weapon' && captureTarget.id === weaponId
 
               return (
-                <div className="binding-row" key={weaponId}>
+                <div className={styles.bindingRow} key={weaponId}>
                   <div>
                     <strong>{weaponEntry.label}</strong>
                     <span>Primary weapon select input.</span>
                   </div>
                   <button
-                    className={`bind-button ${isCapturing ? 'is-capturing' : ''}`}
+                    className={`${styles.bindButton} ${isCapturing ? styles.isCapturing : ''}`}
                     disabled={settingsLocked || (captureTarget !== null && !isCapturing)}
                     onClick={() => onCaptureWeaponBinding(weaponId)}
                   >
@@ -99,25 +100,25 @@ export function SettingsPanel({
           </div>
         </div>
 
-        <div className="settings-section">
-          <div className="section-heading">
+        <div className={styles.settingsSection}>
+          <div className={styles.sectionHeading}>
             <h3>Variant binds</h3>
             <p>Variant keys are global across every weapon family.</p>
           </div>
 
-          <div className="binding-list">
+          <div className={styles.bindingList}>
             {variantIds.map((variantId) => {
               const isCapturing =
                 captureTarget?.scope === 'variant' && captureTarget.id === variantId
 
               return (
-                <div className="binding-row" key={variantId}>
+                <div className={styles.bindingRow} key={variantId}>
                   <div>
                     <strong>{`Variant ${variantId}`}</strong>
                     <span>Used after the weapon key is accepted.</span>
                   </div>
                   <button
-                    className={`bind-button ${isCapturing ? 'is-capturing' : ''}`}
+                    className={`${styles.bindButton} ${isCapturing ? styles.isCapturing : ''}`}
                     disabled={settingsLocked || (captureTarget !== null && !isCapturing)}
                     onClick={() => onCaptureVariantBinding(variantId)}
                   >
@@ -131,25 +132,25 @@ export function SettingsPanel({
           </div>
         </div>
 
-        <div className="settings-section">
-          <div className="section-heading">
+        <div className={styles.settingsSection}>
+          <div className={styles.sectionHeading}>
             <h3>Enabled weapons</h3>
           </div>
 
-          <div className="action-groups">
+          <div className={styles.actionGroups}>
             {weaponIds.map((weaponId) => (
-              <div className="action-group" key={weaponId}>
-                <div className="action-group__heading">
+              <div className={styles.actionGroup} key={weaponId}>
+                <div className={styles.actionGroupHeading}>
                   <strong>{weaponCatalog[weaponId].label}</strong>
                   <span>Variants 1-3 enabled independently.</span>
                 </div>
-                <div className="action-chip-grid">
+                <div className={styles.actionChipGrid}>
                   {trainerActions
                     .filter((action) => action.weaponId === weaponId)
                     .map((action) => (
                       <label
-                        className={`action-chip ${
-                          config.enabledActions[action.id] ? 'is-enabled' : 'is-disabled'
+                        className={`${styles.actionChip} ${
+                          config.enabledActions[action.id] ? styles.isEnabled : styles.isDisabled
                         }`}
                         key={action.id}
                       >
@@ -159,9 +160,9 @@ export function SettingsPanel({
                           disabled={settingsLocked}
                           onChange={() => onToggleAction(action.id)}
                         />
-                        <span className="action-chip__content">
+                        <span className={styles.actionChipContent}>
                           <strong>{`Variant ${action.variantId}`}</strong>
-                          <span className="action-chip__state">
+                          <span className={styles.actionChipState}>
                             {config.enabledActions[action.id] ? 'Enabled' : 'Disabled'}
                           </span>
                         </span>
@@ -174,7 +175,7 @@ export function SettingsPanel({
         </div>
 
         <button
-          className="ghost-button"
+          className={styles.ghostButton}
           disabled={settingsLocked}
           onClick={onRestoreDefaults}
         >

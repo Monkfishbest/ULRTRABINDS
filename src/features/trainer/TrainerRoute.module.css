@@ -1,0 +1,89 @@
+.page {
+  min-height: 100vh;
+  padding: 1.25rem 1rem 2rem;
+  font-family: var(--font-arcade);
+  color: #f8f8f8;
+  --trainer-text-strong: #f8f8f8;
+  --trainer-text-muted: #8f8f8f;
+  --trainer-accent: #f4f4f4;
+  --trainer-accent-strong: #cfcfcf;
+  --trainer-accent-soft: #ffffff;
+  --trainer-warning: #d9d9d9;
+  --trainer-border-strong: rgba(255, 255, 255, 0.55);
+  --trainer-border-muted: rgba(255, 255, 255, 0.18);
+  --trainer-shadow-panel:
+    0 18px 44px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(2, 2, 2, 0.58), rgba(2, 2, 2, 0.8)),
+    url('/background.webp') center / cover fixed no-repeat,
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.035), transparent 40%),
+    linear-gradient(180deg, #090909 0%, #010101 100%);
+  background-size: 48px 48px, 48px 48px, auto, cover, auto, auto, auto;
+}
+
+.page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 58%, rgba(0, 0, 0, 0.45) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 22%);
+}
+
+.chrome,
+.loadingCard {
+  position: relative;
+  z-index: 1;
+  width: min(88rem, calc(100vw - 3rem));
+  margin: 0 auto;
+}
+
+.chrome {
+  margin-bottom: 1rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--trainer-border-strong);
+  background:
+    linear-gradient(180deg, rgba(22, 22, 22, 0.92), rgba(6, 6, 6, 0.96)),
+    rgba(0, 0, 0, 0.9);
+  color: var(--trainer-text-strong);
+  box-shadow: var(--trainer-shadow-panel);
+}
+
+.loadingCard {
+  display: grid;
+  place-items: center;
+  min-height: 18rem;
+  padding: 2rem;
+  border: 1px solid var(--trainer-border-strong);
+  background:
+    linear-gradient(180deg, rgba(16, 16, 16, 0.96), rgba(4, 4, 4, 0.98)),
+    rgba(0, 0, 0, 0.94);
+  box-shadow: var(--trainer-shadow-panel);
+}
+
+.loadingCard p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-inline: 0.75rem;
+  }
+
+  .chrome,
+  .loadingCard {
+    width: min(100%, calc(100vw - 1.5rem));
+  }
+}
