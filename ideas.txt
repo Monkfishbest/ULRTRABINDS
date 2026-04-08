@@ -1,0 +1,16 @@
+ideas for things to add in the future/polish nice to have
+
+fully map to in game configuration to allow things like previous weapon button, and weapon/variant specific keybindings etc etc. 
+
+improve soundbites to be more meaningful, include negative soundbite for failed button presses
+
+different game modes like time attack, or add lives/some failure state  
+
+same in game death 'ha-ha-ha' skull face for failure states with soundbite.
+
+add full support for weapon alts, including images and soundbites (functionally the same right now so who cares)
+
+
+
+
+

@@ -1,3 +1,4 @@
+import { capitalize } from '../../utils/helpers'
 import type { InputToken, MouseInputToken } from './types'
 
 const mouseTokenByButton: Record<number, MouseInputToken> = {
@@ -81,7 +82,7 @@ export function formatInputToken(token: InputToken): string {
   if (token.startsWith('mouse-')) {
     return token
       .split('-')
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .map((part) => capitalize(part))
       .join(' ')
   }
 
@@ -89,5 +90,5 @@ export function formatInputToken(token: InputToken): string {
     return token.toUpperCase()
   }
 
-  return token.charAt(0).toUpperCase() + token.slice(1)
+  return capitalize(token)
 }

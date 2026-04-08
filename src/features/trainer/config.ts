@@ -4,6 +4,11 @@ import {
   defaultWeaponBindings,
   weaponCatalog,
 } from '../../data/weaponCatalog'
+import {
+  createRecordFromKeys,
+  getRoundedAverage,
+  isRecord,
+} from '../../utils/helpers'
 import { normalizeInputToken } from './input'
 import type {
   ActionId,
@@ -16,15 +21,8 @@ import { variantIds, weaponIds } from './types'
 
 const storageKey = 'ultrakill-bind-trainer/v1/config'
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
-}
-
 function createDefaultEnabledActions(): Record<ActionId, boolean> {
-  return Object.fromEntries(allActionIds.map((actionId) => [actionId, true])) as Record<
-    ActionId,
-    boolean
-  >
+  return createRecordFromKeys(allActionIds, () => true)
 }
 
 export function createDefaultTrainerConfig(): TrainerConfig {
@@ -32,12 +30,12 @@ export function createDefaultTrainerConfig(): TrainerConfig {
     weaponBindings: { ...defaultWeaponBindings },
     variantBindings: { ...defaultVariantBindings },
     enabledActions: createDefaultEnabledActions(),
-    audioEnabled: true,
+    audioMuted: false,
     showTextLabels: false,
   }
 }
 
-export const defaultTrainerConfig = createDefaultTrainerConfig()
+const defaultTrainerConfig = createDefaultTrainerConfig()
 
 function normalizeBindingRecord<T extends string>(
   ids: readonly T[],
@@ -111,10 +109,10 @@ export function loadTrainerConfig(): TrainerConfig {
         defaultVariantBindings,
       ),
       enabledActions: normalizeEnabledActions(parsed.enabledActions),
-      audioEnabled:
-        typeof parsed.audioEnabled === 'boolean'
-          ? parsed.audioEnabled
-          : defaultTrainerConfig.audioEnabled,
+      audioMuted:
+        typeof parsed.audioMuted === 'boolean'
+          ? parsed.audioMuted
+          : defaultTrainerConfig.audioMuted,
       showTextLabels:
         typeof parsed.showTextLabels === 'boolean'
           ? parsed.showTextLabels
@@ -142,12 +140,7 @@ export function getEnabledActionIds(config: TrainerConfig): ActionId[] {
 }
 
 export function getAverageReactionTimeMs(reactionTimesMs: number[]): number | null {
-  if (reactionTimesMs.length === 0) {
-    return null
-  }
-
-  const total = reactionTimesMs.reduce((sum, reactionTimeMs) => sum + reactionTimeMs, 0)
-  return Math.round(total / reactionTimesMs.length)
+  return getRoundedAverage(reactionTimesMs)
 }
 
 export function validateTrainerConfig(

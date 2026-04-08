@@ -14,6 +14,7 @@ describe('trainer config', () => {
     const config = createDefaultTrainerConfig()
     config.weaponBindings.shotgun = 'q'
     config.showTextLabels = true
+    config.audioMuted = true
     config.enabledActions['shotgun-2'] = false
 
     saveTrainerConfig(config)
@@ -31,6 +32,24 @@ describe('trainer config', () => {
     expect(result.current.state.hitCount).toBe(0)
     expect(result.current.state.missCount).toBe(0)
     expect(result.current.state.reactionTimesMs).toEqual([])
+  })
+
+  it('falls back to default audioMuted when the saved config omits it', () => {
+    const defaultConfig = createDefaultTrainerConfig()
+
+    window.localStorage.setItem(
+      'ultrakill-bind-trainer/v1/config',
+      JSON.stringify({
+        weaponBindings: defaultConfig.weaponBindings,
+        variantBindings: defaultConfig.variantBindings,
+        enabledActions: defaultConfig.enabledActions,
+        showTextLabels: defaultConfig.showTextLabels,
+      }),
+    )
+
+    const loaded = loadTrainerConfig()
+
+    expect(loaded.audioMuted).toBe(defaultConfig.audioMuted)
   })
 
   it('blocks duplicate bindings, zero enabled actions, and active bind capture', () => {

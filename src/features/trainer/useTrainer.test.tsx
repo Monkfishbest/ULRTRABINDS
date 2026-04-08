@@ -29,15 +29,61 @@ describe('pickNextActionId', () => {
 })
 
 describe('useTrainer', () => {
-  it('supports pause, resume, and reset without carrying a stale round', () => {
+  it('primes enabled images and audio while idle', () => {
     const config = createSingleActionConfig('shotgun-1')
-    let currentNow = 1000
+
+    renderHook(() =>
+      useTrainer({
+        config,
+        captureActive: false,
+        now: () => 1000,
+        random: () => 0,
+      }),
+    )
+
+    expect(MockImage.sources).toContain('/trainer-images/shotgun-1.png')
+    expect(MockAudio.instances).toHaveLength(1)
+    expect(MockAudio.instances[0]?.src).toBe('/trainer-audio/shotgun-1.ogg')
+  })
+
+  it('keeps audio loaded while muted but suppresses playback', () => {
+    const config = createSingleActionConfig('shotgun-1')
+    config.audioMuted = true
 
     const { result } = renderHook(() =>
       useTrainer({
         config,
         captureActive: false,
-        now: () => currentNow,
+        now: () => 1000,
+        random: () => 0,
+      }),
+    )
+
+    expect(MockAudio.instances).toHaveLength(1)
+    expect(MockAudio.instances[0]?.load).toHaveBeenCalledTimes(1)
+
+    act(() => {
+      result.current.startSession()
+    })
+
+    act(() => {
+      window.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'e', bubbles: true }),
+      )
+    })
+
+    expect(result.current.state.stage).toBe('waitingForVariant')
+    expect(MockAudio.instances[0]?.play).not.toHaveBeenCalled()
+  })
+
+  it('supports reset without carrying a stale round', () => {
+    const config = createSingleActionConfig('shotgun-1')
+
+    const { result } = renderHook(() =>
+      useTrainer({
+        config,
+        captureActive: false,
+        now: () => 1000,
         random: () => 0,
       }),
     )
@@ -48,23 +94,6 @@ describe('useTrainer', () => {
 
     expect(result.current.state.status).toBe('running')
     expect(result.current.state.currentActionId).toBe('shotgun-1')
-
-    act(() => {
-      result.current.pauseSession()
-    })
-
-    expect(result.current.state.status).toBe('paused')
-    expect(result.current.state.currentActionId).toBeNull()
-
-    currentNow = 1200
-    act(() => {
-      result.current.resumeSession()
-    })
-
-    expect(result.current.state.status).toBe('running')
-    expect(result.current.state.currentActionId).toBe('shotgun-1')
-    expect(result.current.state.hitCount).toBe(0)
-    expect(result.current.state.missCount).toBe(0)
 
     act(() => {
       result.current.resetSession()

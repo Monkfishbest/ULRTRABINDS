@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url('/VCR_OSD_MONO_1.001.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   font-family: var(--body-font);
@@ -6,24 +14,23 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --display-font: 'Arial Black', Impact, Haettenschweiler, sans-serif;
-  --body-font: 'Trebuchet MS', 'Segoe UI', sans-serif;
-  --text-strong: #f6eee8;
-  --text-muted: #c5aea4;
-  --accent: #ff8c58;
-  --accent-strong: #ff5d43;
-  --accent-soft: #ffb686;
-  --success: #73e8a3;
-  --warning: #ffb45c;
-  --border-strong: rgba(255, 154, 111, 0.28);
-  --border-muted: rgba(255, 237, 220, 0.12);
+  --display-font: 'VCR OSD Mono', monospace;
+  --body-font: 'VCR OSD Mono', monospace;
+  --text-strong: #f8f8f8;
+  --text-muted: #8f8f8f;
+  --accent: #f4f4f4;
+  --accent-strong: #cfcfcf;
+  --accent-soft: #ffffff;
+  --warning: #d9d9d9;
+  --border-strong: rgba(255, 255, 255, 0.55);
+  --border-muted: rgba(255, 255, 255, 0.18);
   --shadow-panel:
-    0 24px 60px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 18px 44px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
   --background:
-    radial-gradient(circle at top, rgba(149, 34, 34, 0.35), transparent 38%),
-    radial-gradient(circle at bottom left, rgba(255, 120, 92, 0.16), transparent 42%),
-    linear-gradient(180deg, #1d0f10 0%, #090505 100%);
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.035), transparent 40%),
+    linear-gradient(180deg, #090909 0%, #010101 100%);
 }
 
 * {
@@ -41,8 +48,10 @@ body {
   background:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(2, 2, 2, 0.58), rgba(2, 2, 2, 0.8)),
+    url('/background.webp') center / cover fixed no-repeat,
     var(--background);
-  background-size: 48px 48px, 48px 48px, cover;
+  background-size: 48px 48px, 48px 48px, auto, cover, cover;
 }
 
 body::before {
@@ -51,8 +60,8 @@ body::before {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.35) 100%),
-    linear-gradient(180deg, rgba(255, 179, 148, 0.05), transparent 28%);
+    radial-gradient(circle at center, transparent 58%, rgba(0, 0, 0, 0.45) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 22%);
 }
 
 button,
@@ -72,13 +81,15 @@ p {
   line-height: 1.55;
 }
 
-code {
-  font-family: 'SFMono-Regular', Consolas, monospace;
-  color: var(--accent-soft);
+#root {
+  width: min(88rem, calc(100vw - 6rem));
+  margin: 0 auto;
+  padding: 1.75rem 0 3rem;
 }
 
-#root {
-  width: min(96rem, calc(100vw - 2rem));
-  margin: 0 auto;
-  padding: 1.2rem 0 2rem;
+@media (max-width: 640px) {
+  #root {
+    width: min(100%, calc(100vw - 1.5rem));
+    padding: 1rem 0 1.75rem;
+  }
 }

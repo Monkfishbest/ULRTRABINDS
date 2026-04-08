@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeAll, beforeEach, vi } from 'vitest'
+import { afterEach, beforeAll, vi } from 'vitest'
 import { MockAudio, MockImage } from './mediaMocks'
 
 beforeAll(() => {
@@ -14,11 +14,6 @@ beforeAll(() => {
     writable: true,
     value: MockImage,
   })
-})
-
-beforeEach(() => {
-  MockAudio.reset()
-  MockImage.reset()
 })
 
 afterEach(() => {

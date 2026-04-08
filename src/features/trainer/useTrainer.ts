@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useReducer, useRef } from 'react'
 import type { MutableRefObject } from 'react'
 import { actionCatalogById } from '../../data/weaponCatalog'
+import { pickRandomItem } from '../../utils/helpers'
 import { getAverageReactionTimeMs, getEnabledActionIds, validateTrainerConfig } from './config'
 import {
   getInputTokenFromKeyboardEvent,
@@ -24,20 +25,14 @@ interface UseTrainerOptions {
 interface UseTrainerResult {
   averageReactionTimeMs: number | null
   currentActionId: ActionId | null
-  enabledActionIds: ActionId[]
   state: TrainerSessionState
   validationErrors: string[]
-  pauseSession: () => void
-  replayCue: () => void
   resetSession: () => void
-  resumeSession: () => void
   startSession: () => void
 }
 
 type TrainerReducerAction =
-  | { type: 'pause' }
   | { type: 'reset' }
-  | { type: 'replayCue' }
   | {
       type: 'roundCompleted'
       nextActionId: ActionId
@@ -48,7 +43,7 @@ type TrainerReducerAction =
   | { type: 'miss'; message: string }
   | { type: 'weaponMatched' }
 
-export function createInitialTrainerSessionState(): TrainerSessionState {
+function createInitialTrainerSessionState(): TrainerSessionState {
   return {
     status: 'idle',
     stage: null,
@@ -69,28 +64,8 @@ function trainerReducer(
   action: TrainerReducerAction,
 ): TrainerSessionState {
   switch (action.type) {
-    case 'pause':
-      return {
-        ...state,
-        status: 'paused',
-        stage: null,
-        currentActionId: null,
-        previousActionId: state.currentActionId ?? state.previousActionId,
-        roundStartedAt: null,
-        feedback: {
-          kind: 'paused',
-          message: 'Paused. Resume to start a fresh round.',
-        },
-      }
-
     case 'reset':
       return createInitialTrainerSessionState()
-
-    case 'replayCue':
-      return {
-        ...state,
-        cuePulseCount: state.cuePulseCount + 1,
-      }
 
     case 'roundStarted':
       return {
@@ -151,41 +126,20 @@ function trainerReducer(
 function ensureAudioElement(
   actionId: ActionId,
   audioByActionRef: MutableRefObject<Partial<Record<ActionId, HTMLAudioElement>>>,
-  failedAudioActionsRef: MutableRefObject<Set<ActionId>>,
-): HTMLAudioElement | null {
-  const failedAudioActions = failedAudioActionsRef.current
-
-  if (!failedAudioActions) {
-    return null
-  }
-
-  if (failedAudioActions.has(actionId)) {
-    return null
-  }
-
+): HTMLAudioElement {
   const existingAudio = audioByActionRef.current?.[actionId]
   if (existingAudio) {
     return existingAudio
   }
 
-  const audioPath = actionCatalogById[actionId].audioPath
-  if (!audioPath) {
-    failedAudioActions.add(actionId)
-    return null
+  const audio = new Audio(actionCatalogById[actionId].audioPath)
+  audio.preload = 'auto'
+  audioByActionRef.current = {
+    ...audioByActionRef.current,
+    [actionId]: audio,
   }
 
-  try {
-    const audio = new Audio(audioPath)
-    audio.preload = 'auto'
-    audioByActionRef.current = {
-      ...audioByActionRef.current,
-      [actionId]: audio,
-    }
-    return audio
-  } catch {
-    failedAudioActions.add(actionId)
-    return null
-  }
+  return audio
 }
 
 export function pickNextActionId(
@@ -202,8 +156,7 @@ export function pickNextActionId(
       ? enabledActionIds.filter((actionId) => actionId !== previousActionId)
       : enabledActionIds
 
-  const selectedIndex = Math.floor(random() * actionPool.length)
-  return actionPool[selectedIndex] ?? actionPool[0] ?? null
+  return pickRandomItem(actionPool, random)
 }
 
 export function useTrainer({
@@ -217,51 +170,61 @@ export function useTrainer({
     undefined,
     createInitialTrainerSessionState,
   )
+  const imageByActionRef = useRef<Partial<Record<ActionId, HTMLImageElement>>>({})
   const audioByActionRef = useRef<Partial<Record<ActionId, HTMLAudioElement>>>({})
-  const failedAudioActionsRef = useRef(new Set<ActionId>())
+  const primedAudioActionsRef = useRef(new Set<ActionId>())
 
   const enabledActionIds = getEnabledActionIds(config)
   const validationErrors = validateTrainerConfig(config, captureActive)
   const averageReactionTimeMs = getAverageReactionTimeMs(state.reactionTimesMs)
 
+  function ensureCueImage(actionId: ActionId): HTMLImageElement {
+    const existingImage = imageByActionRef.current?.[actionId]
+    if (existingImage) {
+      return existingImage
+    }
+
+    const image = new Image()
+    image.decoding = 'async'
+    image.src = actionCatalogById[actionId].imagePath
+
+    if (typeof image.decode === 'function') {
+      void image.decode().catch(() => undefined)
+    }
+
+    imageByActionRef.current = {
+      ...imageByActionRef.current,
+      [actionId]: image,
+    }
+
+    return image
+  }
+
   function playActionAudio(actionId: ActionId) {
-    if (!config.audioEnabled) {
+    if (config.audioMuted) {
       return
     }
 
-    const audio = ensureAudioElement(
-      actionId,
-      audioByActionRef,
-      failedAudioActionsRef,
-    )
-
-    if (!audio) {
-      return
-    }
-
+    const audio = ensureAudioElement(actionId, audioByActionRef)
     audio.currentTime = 0
     void audio.play().catch(() => undefined)
   }
 
-  function primeMedia() {
+  useEffect(() => {
     for (const actionId of enabledActionIds) {
-      const image = new Image()
-      image.src = actionCatalogById[actionId].imagePath
-    }
-
-    if (!config.audioEnabled) {
-      return
+      ensureCueImage(actionId)
     }
 
     for (const actionId of enabledActionIds) {
-      const audio = ensureAudioElement(
-        actionId,
-        audioByActionRef,
-        failedAudioActionsRef,
-      )
-      audio?.load()
+      if (primedAudioActionsRef.current.has(actionId)) {
+        continue
+      }
+
+      const audio = ensureAudioElement(actionId, audioByActionRef)
+      primedAudioActionsRef.current.add(actionId)
+      audio.load()
     }
-  }
+  }, [enabledActionIds])
 
   function startFreshRound() {
     if (enabledActionIds.length === 0) {
@@ -382,20 +345,6 @@ export function useTrainer({
       return
     }
 
-    primeMedia()
-    startFreshRound()
-  }
-
-  function pauseSession() {
-    dispatch({ type: 'pause' })
-  }
-
-  function resumeSession() {
-    if (validationErrors.length > 0) {
-      return
-    }
-
-    primeMedia()
     startFreshRound()
   }
 
@@ -403,28 +352,12 @@ export function useTrainer({
     dispatch({ type: 'reset' })
   }
 
-  function replayCue() {
-    if (!state.currentActionId || state.status !== 'running' || !state.stage) {
-      return
-    }
-
-    dispatch({ type: 'replayCue' })
-
-    if (state.stage === 'waitingForVariant') {
-      playActionAudio(state.currentActionId)
-    }
-  }
-
   return {
     averageReactionTimeMs,
     currentActionId: state.currentActionId,
-    enabledActionIds,
     state,
     validationErrors,
-    pauseSession,
-    replayCue,
     resetSession,
-    resumeSession,
     startSession,
   }
 }

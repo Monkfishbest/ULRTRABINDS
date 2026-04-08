@@ -11,6 +11,10 @@ export const variantIds = ['1', '2', '3'] as const
 export type WeaponId = (typeof weaponIds)[number]
 export type VariantId = (typeof variantIds)[number]
 export type ActionId = `${WeaponId}-${VariantId}`
+export type BindingCaptureTarget =
+  | { scope: 'weapon'; id: WeaponId }
+  | { scope: 'variant'; id: VariantId }
+  | null
 
 export type MouseInputToken =
   | 'mouse-left'
@@ -23,9 +27,9 @@ export type MouseInputToken =
 export type KeyboardInputToken = string
 export type InputToken = KeyboardInputToken | MouseInputToken
 
-export type TrainerStatus = 'idle' | 'running' | 'paused'
+export type TrainerStatus = 'idle' | 'running'
 export type RoundStage = 'waitingForWeapon' | 'waitingForVariant'
-export type FeedbackKind = 'armed' | 'correct' | 'incorrect' | 'paused'
+export type FeedbackKind = 'armed' | 'correct' | 'incorrect'
 
 export interface TrainerFeedback {
   kind: FeedbackKind
@@ -33,9 +37,7 @@ export interface TrainerFeedback {
 }
 
 export interface WeaponCatalogEntry {
-  id: WeaponId
   label: string
-  defaultBinding: InputToken
   variantImagePaths: Record<VariantId, string>
   variantAudioPaths: Record<VariantId, string>
 }
@@ -46,14 +48,14 @@ export interface TrainerAction {
   variantId: VariantId
   label: string
   imagePath: string
-  audioPath?: string
+  audioPath: string
 }
 
 export interface TrainerConfig {
   weaponBindings: Record<WeaponId, InputToken>
   variantBindings: Record<VariantId, InputToken>
   enabledActions: Record<ActionId, boolean>
-  audioEnabled: boolean
+  audioMuted: boolean
   showTextLabels: boolean
 }
 

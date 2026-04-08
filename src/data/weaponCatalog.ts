@@ -35,16 +35,16 @@ const weaponAssetBaseNames: Record<WeaponId, string> = {
   shotgun: 'shotgun',
   nailgun: 'nailgun',
   railcannon: 'railcannon',
-  rocketLauncher: 'rocket-launcher',
+  rocketLauncher: 'rocketLauncher',
 }
 
-export function createActionId(
+function createActionId(
   weaponId: WeaponId,
   variantId: VariantId,
 ): ActionId {
   return `${weaponId}-${variantId}`
 }
-// requires unified audio + png names 
+
 function createWeaponAssetPaths(baseName: string): Pick<
   WeaponCatalogEntry,
   'variantImagePaths' | 'variantAudioPaths'
@@ -56,42 +56,32 @@ function createWeaponAssetPaths(baseName: string): Pick<
       '3': `/trainer-images/${baseName}-3.png`,
     },
     variantAudioPaths: {
-      '1': `/trainer-audio/${baseName}-1.mp3`,
-      '2': `/trainer-audio/${baseName}-2.mp3`,
-      '3': `/trainer-audio/${baseName}-3.mp3`,
+      '1': `/trainer-audio/${baseName}-1.ogg`,
+      '2': `/trainer-audio/${baseName}-2.ogg`,
+      '3': `/trainer-audio/${baseName}-3.ogg`,
     },
   }
 }
 
 export const weaponCatalog = {
   pistol: {
-    id: 'pistol',
     label: weaponLabels.pistol,
-    defaultBinding: defaultWeaponBindings.pistol,
     ...createWeaponAssetPaths(weaponAssetBaseNames.pistol),
   },
   shotgun: {
-    id: 'shotgun',
     label: weaponLabels.shotgun,
-    defaultBinding: defaultWeaponBindings.shotgun,
     ...createWeaponAssetPaths(weaponAssetBaseNames.shotgun),
   },
   nailgun: {
-    id: 'nailgun',
     label: weaponLabels.nailgun,
-    defaultBinding: defaultWeaponBindings.nailgun,
     ...createWeaponAssetPaths(weaponAssetBaseNames.nailgun),
   },
   railcannon: {
-    id: 'railcannon',
     label: weaponLabels.railcannon,
-    defaultBinding: defaultWeaponBindings.railcannon,
     ...createWeaponAssetPaths(weaponAssetBaseNames.railcannon),
   },
   rocketLauncher: {
-    id: 'rocketLauncher',
     label: weaponLabels.rocketLauncher,
-    defaultBinding: defaultWeaponBindings.rocketLauncher,
     ...createWeaponAssetPaths(weaponAssetBaseNames.rocketLauncher),
   },
 } satisfies Record<WeaponId, WeaponCatalogEntry>
