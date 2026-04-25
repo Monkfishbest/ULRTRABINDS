@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { siteContent } from '../../content/siteContent'
 import { FunStuffMenu } from './FunStuffMenu'
-import styles from './HomePage.module.css'
+import styles from './css/HomePage.module.css'
 
 export function HomePage() {
   return (
@@ -29,12 +29,6 @@ export function HomePage() {
             <strong>{siteContent.companyName}</strong>
           </div>
         </div>
-
-        <nav className={styles.nav} aria-label="Primary">
-          <a href="#services">Services</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
       </header>
 
       <section className={styles.hero}>
@@ -47,8 +41,8 @@ export function HomePage() {
             <a className={styles.primaryLink} href="#contact">
               Get in touch
             </a>
-            <a className={styles.secondaryLink} href="#services">
-              Explore services
+            <a className={styles.secondaryLink} href="#about">
+              Learn more
             </a>
           </div>
         </div>
@@ -56,22 +50,6 @@ export function HomePage() {
         <aside className={styles.heroAside}>
           <p>Built for contract work that needs steady execution, fast context absorption, and low-drama delivery.</p>
         </aside>
-      </section>
-
-      <section className={styles.section} id="services">
-        <div className={styles.sectionHeader}>
-          <p className={styles.kicker}>Services</p>
-          <h2>Hands-on help for shipping, stabilising, and simplifying software.</h2>
-        </div>
-
-        <div className={styles.serviceGrid}>
-          {siteContent.services.map((service) => (
-            <article className={styles.serviceCard} key={service.title}>
-              <h3>{service.title}</h3>
-              <p>{service.description}</p>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section className={styles.section} id="about">

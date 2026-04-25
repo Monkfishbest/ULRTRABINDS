@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import styles from './FunStuffMenu.module.css'
+import styles from './css/FunStuffMenu.module.css'
 
 export function FunStuffMenu() {
   const [open, setOpen] = useState(false)

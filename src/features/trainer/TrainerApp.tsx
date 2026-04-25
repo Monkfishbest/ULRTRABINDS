@@ -25,7 +25,7 @@ import type {
   TrainerStatus,
 } from './types'
 import { formatMilliseconds } from '../../utils/helpers'
-import styles from './trainer.module.css'
+import styles from './css/TrainerApp.module.css'
 
 const stageCopyByKey: Record<'idle' | RoundStage, { title: string; hint: string }> = {
   idle: {

@@ -7,6 +7,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Framework build output
+.next
+out
+coverage
+
 node_modules
 dist
 dist-ssr

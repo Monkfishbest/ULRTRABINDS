@@ -4,11 +4,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Your Company Name',
+    default: 'Ocean Fish Technology Solutions',
     template: '%s | Your Company Name',
   },
   description:
-    'Independent contract development for teams that need thoughtful engineering and reliable delivery.',
+    'Independent contract development',
   icons: {
     icon: '/favicon.ico',
   },

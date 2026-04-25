@@ -8,10 +8,12 @@ describe('home page', () => {
 
     expect(
       screen.getByRole('heading', {
-        name: 'Build calmer systems, ship faster, and keep complexity under control.',
+        name: 'this is the hero title',
       }),
     ).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'About' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: "I'm John, I don't quite know what i'm doing with my life" }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Start a conversation.' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Fun stuff' }))

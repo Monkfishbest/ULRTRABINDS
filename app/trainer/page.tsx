@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { TrainerRoute } from '../../src/features/trainer/TrainerRoute'
 
 export const metadata: Metadata = {
-  title: 'ULTRABINDS',
+  title:
+    { absolute: 'ULTRABINDS' },
   description: 'A browser-based ULTRAKILL weapon and variant bind trainer.',
   robots: {
     index: false,

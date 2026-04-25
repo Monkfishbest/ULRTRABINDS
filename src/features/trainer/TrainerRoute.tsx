@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useSyncExternalStore } from 'react'
 import { TrainerApp } from './TrainerApp'
-import styles from './TrainerRoute.module.css'
+import styles from './css/TrainerRoute.module.css'
 
 function subscribe(): () => void {
   return () => undefined

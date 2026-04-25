@@ -1,6 +1,6 @@
 import { trainerActions, weaponCatalog } from '../../data/weaponCatalog'
 import { formatInputToken } from './input'
-import styles from './trainer.module.css'
+import styles from './css/TrainerApp.module.css'
 import type {
   ActionId,
   BindingCaptureTarget,

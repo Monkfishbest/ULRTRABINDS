@@ -4,11 +4,6 @@ export interface SiteLink {
   value: string
 }
 
-export interface SiteService {
-  description: string
-  title: string
-}
-
 export interface SiteContent {
   aboutBody: string
   aboutTitle: string
@@ -20,53 +15,30 @@ export interface SiteContent {
   legalLine?: string | null
   logoAlt: string
   logoSrc?: string | null
-  services: SiteService[]
 }
 
 export const siteContent: SiteContent = {
-  companyName: 'Your Company Name',
-  heroEyebrow: 'Independent contract development',
-  heroTitle: 'Build calmer systems, ship faster, and keep complexity under control.',
+  companyName:`John's website`,
+  heroEyebrow: 'hey casper ;)',
+  heroTitle: 'this is the hero title',
   heroBody:
-    'Practical software delivery for teams that need a senior engineer who can design, implement, and own the details without adding unnecessary process.',
-  services: [
-    {
-      title: 'Product engineering',
-      description:
-        'Ship user-facing features with clean frontend architecture, thoughtful UX, and maintainable implementation.',
-    },
-    {
-      title: 'Technical cleanup',
-      description:
-        'Untangle brittle code paths, reduce delivery friction, and simplify systems that have become expensive to change.',
-    },
-    {
-      title: 'Delivery support',
-      description:
-        'Provide focused contract help on greenfield work, refactors, internal tools, and feature completion.',
-    },
-  ],
-  aboutTitle: 'About',
+    "This is the hero body, ",
+  aboutTitle: "I'm John, I don't quite know what i'm doing with my life",
   aboutBody:
-    'This site is designed for a one-person limited company offering hands-on software development. The emphasis is on reliable execution, clear communication, and code that stays understandable after handover.',
+    "I was working in tech but I got really burnt out, I'm trying to change my relationship with coding and tech to be one that's less associated with being very stressed and anxious",
   contactLinks: [
     {
       label: 'Email',
-      value: 'hello@yourcompany.dev',
-      href: 'mailto:hello@yourcompany.dev',
-    },
-    {
-      label: 'LinkedIn',
-      value: 'linkedin.com/in/your-profile',
-      href: 'https://www.linkedin.com/in/your-profile',
+      value: 'shetlandjohnmcneill@hotmail.co.uk',
+      href: 'mailto:shetlandjohnmcneill@hotmail.co.uk',
     },
     {
       label: 'GitHub',
-      value: 'github.com/your-handle',
-      href: 'https://github.com/your-handle',
+      value: 'github.com/monkfishbest',
+      href: 'https://github.com/monkfishbest',
     },
   ],
-  logoAlt: 'Company logo placeholder',
-  logoSrc: null,
-  legalLine: null,
+  logoAlt: 'a fish jumping out of water with a laptop with some terminal feedback',
+  logoSrc: "/public/logo_large_johnfish.png",
+  legalLine: "Enjoy your meal, you too! -_-'",
 }
