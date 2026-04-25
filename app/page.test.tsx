@@ -7,12 +7,17 @@ describe('home page', () => {
     render(<Page />)
 
     expect(
+      screen.getAllByRole('img', {
+        name: 'a fish jumping out of water with a laptop with some terminal feedback',
+      }),
+    ).toHaveLength(1)
+    expect(
       screen.getByRole('heading', {
-        name: 'this is the hero title',
+        name: 'Software development and tutoring services',
       }),
     ).toBeInTheDocument()
     expect(
-      screen.getByRole('heading', { name: "I'm John, I don't quite know what i'm doing with my life" }),
+      screen.getByRole('heading', { name: "Hi, I'm John" }),
     ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Start a conversation.' })).toBeInTheDocument()
 

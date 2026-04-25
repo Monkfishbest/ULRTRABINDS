@@ -60,7 +60,7 @@
 
 .logoImage {
   object-fit: contain;
-  padding: 0.5rem;
+  padding: 0.3rem;
 }
 
 .brandCopy {
@@ -85,14 +85,10 @@
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.8fr);
-  gap: 1.5rem;
   margin-bottom: 3rem;
 }
 
 .heroPanel,
-.heroAside,
 .aboutPanel,
 .contactCard,
 .footerBar {
@@ -105,8 +101,12 @@
 }
 
 .heroPanel {
-  padding: 2rem;
-  border-radius: 1.8rem;
+  width: 100%;
+  padding: clamp(2rem, 5vw, 4rem);
+  border-radius: 2.25rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(237, 244, 251, 0.9)),
+    rgba(255, 255, 255, 0.88);
 }
 
 .heroPanel h1,
@@ -117,29 +117,28 @@
 }
 
 .heroPanel h1 {
-  max-width: 12ch;
-  font-size: clamp(2.7rem, 7vw, 5rem);
-  line-height: 0.96;
-  letter-spacing: -0.03em;
+  max-width: 14ch;
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
 }
 
 .heroBody {
-  max-width: 42rem;
-  margin: 1.2rem 0 0;
+  max-width: 62rem;
+  margin: 1.4rem 0 0;
   color: rgba(16, 35, 58, 0.82);
-  font-size: 1.08rem;
-  line-height: 1.75;
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.85;
 }
 
 .heroActions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.9rem;
-  margin-top: 1.6rem;
+  margin-top: 2rem;
 }
 
-.primaryLink,
-.secondaryLink {
+.primaryLink {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -154,19 +153,6 @@
   color: #f6fbff;
 }
 
-.secondaryLink {
-  background: rgba(255, 255, 255, 0.72);
-  color: #173756;
-}
-
-.heroAside {
-  display: grid;
-  align-content: end;
-  padding: 1.5rem;
-  border-radius: 1.5rem;
-}
-
-.heroAside p,
 .aboutPanel p,
 .contactCard span,
 .footerBar p {
@@ -204,7 +190,7 @@
 
 .aboutPanel {
   padding: 1.5rem;
-  max-width: 56rem;
+  width: 100%;
 }
 
 .contactGrid {
@@ -241,12 +227,10 @@
 }
 
 @media (max-width: 960px) {
-  .hero,
   .contactGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .header,
   .footerBar {
     flex-direction: column;
     align-items: stretch;
@@ -259,7 +243,6 @@
   }
 
   .heroPanel,
-  .heroAside,
   .serviceCard,
   .aboutPanel,
   .contactCard,

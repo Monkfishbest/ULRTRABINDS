@@ -7,10 +7,9 @@ export const metadata: Metadata = {
     default: 'Ocean Fish Technology Solutions',
     template: '%s | Your Company Name',
   },
-  description:
-    'Independent contract development',
+  description: 'Independent contract development',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/small_logo_johnfish.png',
   },
 }
 

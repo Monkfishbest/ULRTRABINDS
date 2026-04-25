@@ -33,7 +33,6 @@ export function HomePage() {
 
       <section className={styles.hero}>
         <div className={styles.heroPanel}>
-          <p className={styles.kicker}>{siteContent.heroEyebrow}</p>
           <h1>{siteContent.heroTitle}</h1>
           <p className={styles.heroBody}>{siteContent.heroBody}</p>
 
@@ -41,15 +40,8 @@ export function HomePage() {
             <a className={styles.primaryLink} href="#contact">
               Get in touch
             </a>
-            <a className={styles.secondaryLink} href="#about">
-              Learn more
-            </a>
           </div>
         </div>
-
-        <aside className={styles.heroAside}>
-          <p>Built for contract work that needs steady execution, fast context absorption, and low-drama delivery.</p>
-        </aside>
       </section>
 
       <section className={styles.section} id="about">
@@ -79,7 +71,10 @@ export function HomePage() {
         </div>
 
         <div className={styles.footerBar}>
-          <p>{siteContent.legalLine ?? 'One-person limited company site placeholder. Replace with final legal/company line when ready.'}</p>
+          <p>
+            {siteContent.legalLine ??
+              'One-person limited company site placeholder. Replace with final legal/company line when ready.'}
+          </p>
           <FunStuffMenu />
         </div>
       </footer>
