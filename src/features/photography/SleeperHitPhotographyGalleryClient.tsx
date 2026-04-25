@@ -32,13 +32,11 @@ export function SleeperHitPhotographyGalleryClient({
   const openLightbox = (index: number) => {
     setLightboxIndex(index)
     setLightboxOpen(true)
-    document.body.style.overflow = 'hidden'
   }
 
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setLightboxOpen(false)
-    document.body.style.overflow = 'unset'
-  }
+  }, [])
 
   const nextPhoto = useCallback(() => {
     setLightboxIndex((prev) => (prev + 1) % photos.length)
@@ -47,6 +45,17 @@ export function SleeperHitPhotographyGalleryClient({
   const prevPhoto = useCallback(() => {
     setLightboxIndex((prev) => (prev - 1 + photos.length) % photos.length)
   }, [photos.length])
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+    }
+  }, [lightboxOpen])
 
   useEffect(() => {
     if (!lightboxOpen) return
@@ -60,7 +69,7 @@ export function SleeperHitPhotographyGalleryClient({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [lightboxOpen, nextPhoto, prevPhoto])
+  }, [closeLightbox, lightboxOpen, nextPhoto, prevPhoto])
 
   return (
     <>

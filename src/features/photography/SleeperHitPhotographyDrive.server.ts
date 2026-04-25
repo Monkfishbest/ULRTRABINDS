@@ -1,4 +1,5 @@
 import { google } from 'googleapis'
+import { unstable_cache } from 'next/cache'
 import { type GalleryPhoto, type GallerySection, getGallerySection, type GallerySectionId } from './SleeperHitPhotographyData'
 
 type DriveFile = {
@@ -20,6 +21,7 @@ export type LoadedGallerySection = {
 }
 
 const driveTimeoutMs = 10000
+const drivePhotoListCacheSeconds = 300
 
 function getDriveErrorMessage(error: unknown) {
   if (error instanceof Error) {
@@ -96,7 +98,8 @@ function toDrivePhoto(file: DriveFile): GalleryPhoto | null {
   }
 }
 
-async function listDrivePhotos(section: GallerySection): Promise<GalleryPhoto[] | null> {
+async function listDrivePhotosUncached(sectionId: GallerySectionId): Promise<GalleryPhoto[] | null> {
+  const section = getGallerySection(sectionId)
   const folderId = getDriveFolderId(section)
 
   if (!folderId) {
@@ -130,11 +133,19 @@ async function listDrivePhotos(section: GallerySection): Promise<GalleryPhoto[] 
   return photos.length > 0 ? photos : null
 }
 
+const listDrivePhotos = unstable_cache(
+  listDrivePhotosUncached,
+  ['sleeper-hit-photography-drive-photos'],
+  {
+    revalidate: drivePhotoListCacheSeconds,
+  },
+)
+
 export async function loadGallerySection(sectionId: GallerySectionId): Promise<LoadedGallerySection> {
   const section = getGallerySection(sectionId)
 
   try {
-    const drivePhotos = await listDrivePhotos(section)
+    const drivePhotos = await listDrivePhotos(sectionId)
 
     if (drivePhotos) {
       return {

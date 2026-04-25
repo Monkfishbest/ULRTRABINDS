@@ -62,7 +62,7 @@ export async function GET(
 
     return new Response(Readable.toWeb(response.data as Readable) as ReadableStream, {
       headers: {
-        'Cache-Control': 'public, max-age=3600',
+        'Cache-Control': 'public, max-age=604800, s-maxage=2592000, stale-while-revalidate=2592000',
         'Content-Type': mimeType,
       },
     })
