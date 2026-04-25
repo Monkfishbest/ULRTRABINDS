@@ -1,9 +1,14 @@
+'use client'
+
+import { useState } from 'react'
 import Image from 'next/image'
 import { siteContent } from '../../content/siteContent'
 import { FunStuffMenu } from './FunStuffMenu'
 import styles from './css/HomePage.module.css'
 
 export function HomePage() {
+  const [logoLoading, setLogoLoading] = useState(!!siteContent.logoSrc)
+
   return (
     <main className={styles.page}>
       <div className={styles.backdrop} />
@@ -12,13 +17,22 @@ export function HomePage() {
         <div className={styles.brand}>
           <div className={styles.logoSlot} aria-label={siteContent.logoAlt}>
             {siteContent.logoSrc ? (
-              <Image
-                src={siteContent.logoSrc}
-                alt={siteContent.logoAlt}
-                fill
-                sizes="4.4rem"
-                className={styles.logoImage}
-              />
+              <div className={styles.logoWrapper}>
+                {logoLoading && (
+                  <div className={styles.logoLoading}>
+                    <div className={styles.logoSpinner} />
+                  </div>
+                )}
+                <Image
+                  src={siteContent.logoSrc}
+                  alt={siteContent.logoAlt}
+                  fill
+                  sizes="4.4rem"
+                  className={styles.logoImage}
+                  style={{ display: logoLoading ? 'none' : 'block' }}
+                  onLoad={() => setLogoLoading(false)}
+                />
+              </div>
             ) : (
               <span>Logo</span>
             )}

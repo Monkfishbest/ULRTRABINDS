@@ -5,6 +5,10 @@ type DriveFile = {
   createdTime?: string | null
   description?: string | null
   id?: string | null
+  imageMediaMetadata?: {
+    height?: number | null
+    width?: number | null
+  } | null
   mimeType?: string | null
   name?: string | null
 }
@@ -15,9 +19,29 @@ export type LoadedGallerySection = {
   source: 'drive' | 'fallback'
 }
 
+const driveTimeoutMs = 10000
+
+function getDriveErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return 'Unknown Google Drive error'
+}
+
+const sectionDriveFolderIds: Record<GallerySection['id'], string> = {
+  events: '1m13viGXlQ488nZT1NXD0_jJBIZo_rMf5',
+  landscapes: '1PF4r98RDKcQu8hwZYr7-XiMc3bEKJTMs',
+  portraits: '162NlwBD3DKcvstEyfqoKTfqUFXY3QJ5f',
+  street: '18UpLqTaCGD9BQbYX8cqZeU1aTFqJ_JyE',
+}
+
 function getDriveCredentials() {
-  const clientEmail = process.env.GOOGLE_DRIVE_CLIENT_EMAIL
-  const privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  const clientEmail =
+    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? process.env.GOOGLE_DRIVE_CLIENT_EMAIL
+  const privateKey =
+    process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n') ??
+    process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, '\n')
 
   if (!clientEmail || !privateKey) {
     return null
@@ -27,7 +51,11 @@ function getDriveCredentials() {
 }
 
 function getDriveFolderId(section: GallerySection) {
-  return process.env[section.folderEnvVar]
+  return (
+    process.env[section.folderEnvVar] ??
+    sectionDriveFolderIds[section.id] ??
+    process.env.GOOGLE_DRIVE_FOLDER_ID
+  )
 }
 
 async function getDriveClient() {
@@ -61,8 +89,10 @@ function toDrivePhoto(file: DriveFile): GalleryPhoto | null {
     description:
       file.description?.trim() ||
       'No abstract yet. You can add one later through the file description metadata if you want richer panel text.',
+    height: file.imageMediaMetadata?.height ?? 1200,
     id: file.id,
     src: `/api/drive/photo/${file.id}?mimeType=${encodedMimeType}`,
+    width: file.imageMediaMetadata?.width ?? 1600,
   }
 }
 
@@ -79,13 +109,18 @@ async function listDrivePhotos(section: GallerySection): Promise<GalleryPhoto[] 
     return null
   }
 
-  const response = await drive.files.list({
-    fields: 'files(id,name,mimeType,description,createdTime)',
-    includeItemsFromAllDrives: true,
-    orderBy: 'createdTime desc',
-    q: `'${folderId}' in parents and trashed = false and mimeType contains 'image/'`,
-    supportsAllDrives: true,
-  })
+  const response = await drive.files.list(
+    {
+      fields: 'files(id,name,mimeType,description,createdTime,imageMediaMetadata(width,height))',
+      includeItemsFromAllDrives: true,
+      orderBy: 'createdTime desc',
+      q: `'${folderId}' in parents and trashed = false and mimeType contains 'image/'`,
+      supportsAllDrives: true,
+    },
+    {
+      timeout: driveTimeoutMs,
+    },
+  )
 
   const photos =
     response.data.files
@@ -108,8 +143,10 @@ export async function loadGallerySection(sectionId: GallerySectionId): Promise<L
         source: 'drive',
       }
     }
-  } catch {
-    // Fall through to placeholders so the gallery still renders if Drive is unavailable.
+  } catch (error) {
+    console.warn(
+      `[Sleeper Hit Photography] Google Drive failed for ${section.id}: ${getDriveErrorMessage(error)}`,
+    )
   }
 
   return {
@@ -117,4 +154,19 @@ export async function loadGallerySection(sectionId: GallerySectionId): Promise<L
     section,
     source: 'fallback',
   }
+}
+
+export async function loadGalleryCovers(): Promise<LoadedGallerySection[]> {
+  const sections: GallerySectionId[] = ['events', 'landscapes', 'street', 'portraits']
+
+  return Promise.all(
+    sections.map(async (sectionId) => {
+      const loadedSection = await loadGallerySection(sectionId)
+
+      return {
+        ...loadedSection,
+        photos: loadedSection.photos.slice(0, 1),
+      }
+    }),
+  )
 }

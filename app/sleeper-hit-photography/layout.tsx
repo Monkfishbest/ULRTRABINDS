@@ -5,6 +5,9 @@ import { SleeperHitPhotographyLayout } from '../../src/features/photography/Slee
 export const metadata: Metadata = {
   title: { absolute: 'Sleeper Hit Photography' },
   description: 'A minimal photography gallery with side navigation and placeholder collections.',
+  icons: {
+    icon: '📷',
+  },
   robots: {
     index: false,
     follow: false,

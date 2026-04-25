@@ -22,12 +22,7 @@ export function SleeperHitPhotographyLayout({
           </Link>
 
           <div className={styles.brandBlock}>
-            <p className={styles.kicker}>Photography</p>
             <h1>Sleeper Hit Photography</h1>
-            <p className={styles.intro}>
-              A quiet little photo app with placeholder galleries for now, borrowing the sparse
-              side-nav feel you liked and leaving plenty of room to swap in real work later.
-            </p>
           </div>
 
           <nav aria-label="Photography sections">

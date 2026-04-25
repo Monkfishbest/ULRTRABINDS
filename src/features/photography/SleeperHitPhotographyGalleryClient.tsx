@@ -1,7 +1,7 @@
 'use client'
 
+import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
 import type { GalleryPhoto, GallerySection } from './SleeperHitPhotographyData'
 import styles from './css/SleeperHitPhotography.module.css'
 
@@ -14,83 +14,162 @@ export function SleeperHitPhotographyGalleryClient({
   section: GallerySection
   source: 'drive' | 'fallback'
 }>) {
-  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null)
+  const [loadingImages, setLoadingImages] = useState<Set<string>>(new Set(photos.map((p) => p.id)))
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [showCaption, setShowCaption] = useState(true)
 
-  const selectedPhoto = useMemo(
-    () => photos.find((photo) => photo.id === selectedPhotoId) ?? null,
-    [photos, selectedPhotoId],
-  )
+  const currentPhoto = photos[lightboxIndex]
+
+  const handleImageLoad = (photoId: string) => {
+    setLoadingImages((prev) => {
+      const next = new Set(prev)
+      next.delete(photoId)
+      return next
+    })
+  }
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+    document.body.style.overflow = 'unset'
+  }
+
+  const nextPhoto = useCallback(() => {
+    setLightboxIndex((prev) => (prev + 1) % photos.length)
+  }, [photos.length])
+
+  const prevPhoto = useCallback(() => {
+    setLightboxIndex((prev) => (prev - 1 + photos.length) % photos.length)
+  }, [photos.length])
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') nextPhoto()
+      if (e.key === 'ArrowLeft') prevPhoto()
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'c' || e.key === 'C') setShowCaption((prev) => !prev)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightboxOpen, nextPhoto, prevPhoto])
 
   return (
-    <section className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <p className={styles.sectionIndex}>{section.title}</p>
-        <p className={styles.sectionIntro}>{section.intro}</p>
-        <p className={styles.sourceNote}>
-          {source === 'drive'
-            ? 'Live from Google Drive.'
-            : 'Showing fallback placeholders until the Google Drive folder is connected.'}
-        </p>
-      </div>
+    <>
+      <section className={styles.section}>
+        <h2 className={styles.visuallyHidden}>{section.title}</h2>
+        {source === 'fallback' ? (
+          <p className={styles.fallbackNote}>
+            Woups! there was a problem connecting to the server that holds the images! this isn't
+            Caspers fault but his friend who built him this website, here are some cats looking
+            dissapointed at instead of Caspers bueatiful photographs
+          </p>
+        ) : null}
 
-      <div className={styles.galleryShell}>
-        <div className={styles.gallery}>
-          {photos.map((photo) => (
-            <figure className={styles.figure} key={photo.id}>
+        <div className={styles.photoList}>
+          {photos.map((photo, index) => (
+            <figure className={styles.photoFigure} key={photo.id}>
               <button
-                type="button"
-                className={styles.photoButton}
-                onClick={() => setSelectedPhotoId(photo.id)}
+                className={styles.imageButton}
+                onClick={() => openLightbox(index)}
+                aria-label={`Open ${photo.caption} in lightbox`}
               >
-                <div className={styles.imageFrame}>
+                <div className={styles.imageWrapper}>
+                  {loadingImages.has(photo.id) && (
+                    <div className={styles.imageLoading}>
+                      <div className={styles.photoSpinner} />
+                    </div>
+                  )}
                   <Image
                     src={photo.src}
                     alt={photo.alt}
-                    fill
-                    sizes="(max-width: 900px) 100vw, 50vw"
+                    width={photo.width}
+                    height={photo.height}
+                    sizes="(max-width: 700px) 100vw, (max-width: 1200px) 42vw, 28vw"
                     className={styles.image}
+                    style={{ opacity: loadingImages.has(photo.id) ? 0 : 1 }}
+                    priority={index < 3}
+                    unoptimized
+                    onLoad={() => handleImageLoad(photo.id)}
                   />
                 </div>
               </button>
-              <figcaption className={styles.caption}>{photo.caption}</figcaption>
             </figure>
           ))}
         </div>
+      </section>
 
-        {selectedPhoto ? (
-          <aside className={styles.detailPanel} aria-label={`${selectedPhoto.caption} detail panel`}>
-            <div className={styles.detailImageFrame}>
-              <Image
-                src={selectedPhoto.src}
-                alt={selectedPhoto.alt}
-                fill
-                sizes="(max-width: 900px) 100vw, 30vw"
-                className={styles.image}
-              />
-            </div>
+      {lightboxOpen && currentPhoto && (
+        <div className={styles.lightboxBackdrop} onClick={closeLightbox}>
+          <div className={styles.lightboxContainer} onClick={(e) => e.stopPropagation()}>
+            <button
+              className={styles.lightboxClose}
+              onClick={closeLightbox}
+              aria-label="Close lightbox"
+            >
+              ✕
+            </button>
 
-            <div className={styles.detailCopy}>
-              <p className={styles.sectionIndex}>Selected image</p>
-              <h3 className={styles.detailHeading}>{selectedPhoto.caption}</h3>
-              <p className={styles.aboutCopy}>{selectedPhoto.description}</p>
+            <div className={styles.lightboxContent}>
               <button
-                type="button"
-                className={styles.closeButton}
-                onClick={() => setSelectedPhotoId(null)}
+                className={styles.lightboxNav}
+                onClick={prevPhoto}
+                aria-label="Previous image"
               >
-                Close panel
+                ‹
+              </button>
+
+              <div className={styles.lightboxImageWrapper}>
+                <Image
+                  src={currentPhoto.src}
+                  alt={currentPhoto.alt}
+                  width={currentPhoto.width}
+                  height={currentPhoto.height}
+                  className={styles.lightboxImage}
+                  priority
+                  unoptimized
+                />
+              </div>
+
+              <button
+                className={styles.lightboxNav}
+                onClick={nextPhoto}
+                aria-label="Next image"
+              >
+                ›
               </button>
             </div>
-          </aside>
-        ) : (
-          <aside className={styles.detailPanelEmpty}>
-            <p className={styles.aboutCopy}>
-              Click an image to open the panel view. This is the bit that can mirror the
-              image-and-abstract rhythm you liked from the reference site.
-            </p>
-          </aside>
-        )}
-      </div>
-    </section>
+
+            {showCaption && (
+              <div className={styles.lightboxInfo}>
+                <div className={styles.lightboxMeta}>
+                  <h3>{currentPhoto.caption}</h3>
+                  <p className={styles.lightboxIndex}>
+                    {lightboxIndex + 1} / {photos.length}
+                  </p>
+                </div>
+                {currentPhoto.description && (
+                  <p className={styles.lightboxDescription}>{currentPhoto.description}</p>
+                )}
+                <button
+                  className={styles.lightboxToggleCaption}
+                  onClick={() => setShowCaption((prev) => !prev)}
+                >
+                  Hide caption
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   )
 }

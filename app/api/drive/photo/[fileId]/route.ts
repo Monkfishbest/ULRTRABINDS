@@ -3,8 +3,11 @@ import type { NextRequest } from 'next/server'
 import { Readable } from 'node:stream'
 
 function getDriveClient() {
-  const clientEmail = process.env.GOOGLE_DRIVE_CLIENT_EMAIL
-  const privateKey = process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  const clientEmail =
+    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? process.env.GOOGLE_DRIVE_CLIENT_EMAIL
+  const privateKey =
+    process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n') ??
+    process.env.GOOGLE_DRIVE_PRIVATE_KEY?.replace(/\\n/g, '\n')
 
   if (!clientEmail || !privateKey) {
     return null
@@ -19,6 +22,16 @@ function getDriveClient() {
   })
 
   return google.drive({ version: 'v3', auth })
+}
+
+const drivePhotoTimeoutMs = 10000
+
+function getDriveErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return 'Unknown Google Drive error'
 }
 
 export async function GET(
@@ -41,7 +54,10 @@ export async function GET(
         fileId,
         supportsAllDrives: true,
       },
-      { responseType: 'stream' },
+      {
+        responseType: 'stream',
+        timeout: drivePhotoTimeoutMs,
+      },
     )
 
     return new Response(Readable.toWeb(response.data as Readable) as ReadableStream, {
@@ -50,7 +66,11 @@ export async function GET(
         'Content-Type': mimeType,
       },
     })
-  } catch {
+  } catch (error) {
+    console.warn(
+      `[Sleeper Hit Photography] Google Drive photo failed for ${fileId}: ${getDriveErrorMessage(error)}`,
+    )
+
     return new Response('Unable to load photo from Google Drive.', { status: 404 })
   }
 }
