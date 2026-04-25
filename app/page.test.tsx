@@ -24,5 +24,9 @@ describe('home page', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Fun stuff' }))
 
     expect(screen.getByRole('link', { name: 'ULTRABINDS' })).toHaveAttribute('href', '/trainer')
+    expect(screen.getByRole('link', { name: 'Sleeper Hit Photography' })).toHaveAttribute(
+      'href',
+      '/sleeper-hit-photography',
+    )
   })
 })

@@ -24,6 +24,9 @@ export function FunStuffMenu() {
           <Link className={styles.link} href="/trainer">
             ULTRABINDS
           </Link>
+          <Link className={styles.link} href="/sleeper-hit-photography">
+            Sleeper Hit Photography
+          </Link>
         </div>
       ) : null}
     </div>

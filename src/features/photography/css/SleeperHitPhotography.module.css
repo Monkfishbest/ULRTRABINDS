@@ -1,0 +1,253 @@
+.page {
+  --shp-ink: #131313;
+  --shp-muted: rgba(19, 19, 19, 0.58);
+  --shp-border: rgba(19, 19, 19, 0.12);
+  --shp-paper: #f6f1e8;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(16rem, 19rem) minmax(0, 1fr);
+  background: var(--shp-paper);
+  color: var(--shp-ink);
+}
+
+.sidebar {
+  border-right: 1px solid var(--shp-border);
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.sidebarInner {
+  position: sticky;
+  top: 0;
+  display: grid;
+  gap: 2rem;
+  min-height: 100vh;
+  padding: 2rem 1.4rem;
+}
+
+.backLink,
+.menuLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.backLink {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brandBlock {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.kicker,
+.sectionIndex,
+.caption {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--shp-muted);
+}
+
+.brandBlock h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 0.95;
+  font-weight: 500;
+}
+
+.intro,
+.sectionIntro,
+.aboutCopy {
+  margin: 0;
+  max-width: 34rem;
+  line-height: 1.75;
+  color: rgba(19, 19, 19, 0.78);
+}
+
+.menu {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuLink {
+  display: inline-block;
+  padding: 0.15rem 0;
+  font-size: 0.98rem;
+}
+
+.menuLinkActive {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.menuLink:hover,
+.backLink:hover {
+  opacity: 0.7;
+}
+
+.content {
+  display: grid;
+  gap: 3.5rem;
+  padding: 2.2rem 2.4rem 3rem;
+}
+
+.section,
+.aboutSection {
+  display: grid;
+  gap: 1.35rem;
+}
+
+.pageHeading {
+  margin: 0;
+  font-size: clamp(2.1rem, 4vw, 3rem);
+  line-height: 0.98;
+  font-weight: 500;
+}
+
+.sectionHeader {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.sourceNote {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--shp-muted);
+}
+
+.galleryShell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.figure {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+}
+
+.photoButton,
+.closeButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.imageFrame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.image {
+  object-fit: cover;
+  filter: saturate(0.92) contrast(1.02);
+}
+
+.detailPanel,
+.detailPanelEmpty {
+  position: sticky;
+  top: 2.2rem;
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--shp-border);
+  background: rgba(255, 255, 255, 0.44);
+}
+
+.detailImageFrame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.detailCopy {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.detailHeading {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.closeButton {
+  justify-self: start;
+  padding: 0.35rem 0;
+  color: var(--shp-muted);
+  font-size: 0.88rem;
+}
+
+.figure:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.figure:nth-child(3) .imageFrame {
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--shp-border);
+  }
+
+  .sidebarInner {
+    position: static;
+    min-height: auto;
+  }
+
+  .content {
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .galleryShell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gallery {
+    grid-template-columns: minmax(0, 1fr);
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .figure:nth-child(3) {
+    grid-column: auto;
+  }
+
+  .figure:nth-child(3) .imageFrame {
+    aspect-ratio: 4 / 5;
+  }
+
+  .detailPanel,
+  .detailPanelEmpty {
+    position: static;
+  }
+}
